@@ -1,0 +1,17 @@
+domain: ysicing.me
+layout:
+- go.kubebuilder.io/v3
+multigroup: true
+projectName: k3s-autoscaler
+repo: github.com/ysicing/k3s-autoscaler
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: ysicing.me
+  group: devops
+  kind: AutoScaler
+  path: github.com/ysicing/k3s-autoscaler/apis/devops/v1beta1
+  version: v1beta1
+version: "3"

@@ -1,0 +1,7 @@
+apiVersion: devops.ysicing.me/v1beta1
+kind: AutoScaler
+metadata:
+  name: autoscaler-sample
+spec:
+  # Add fields here
+  foo: bar

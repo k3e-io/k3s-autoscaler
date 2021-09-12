@@ -1,0 +1,20 @@
+# permissions for end users to view autoscalers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: autoscaler-viewer-role
+rules:
+- apiGroups:
+  - devops.ysicing.me
+  resources:
+  - autoscalers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - devops.ysicing.me
+  resources:
+  - autoscalers/status
+  verbs:
+  - get
