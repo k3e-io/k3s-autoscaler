@@ -71,6 +71,7 @@ func (r *AutoScalerReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			}
 		}
 	}()
+
 	return ctrl.Result{}, nil
 }
 
