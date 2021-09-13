@@ -6,6 +6,10 @@ package qcloud
 // DiskType 磁盘类型
 type DiskType string
 
+func (dt DiskType) Value() string {
+	return string(dt)
+}
+
 const (
 	SystemDiskLocal = DiskType("LOCAL_BASIC") // 本地硬盘
 	SystemDiskLocalSSD = DiskType("LOCAL_SSD") // 本地ssd
@@ -25,12 +29,20 @@ const (
 	PaidTypeDefault = PaidTypeSpot
 )
 
+func (p PaidType) Value() string {
+	return string(p)
+}
+
 type InstanceType string
 
 const (
 	CustomInstanceSA2 = InstanceType("SA2.SMALL1") // 0.04/h
-
+	DefaultInstance = CustomInstanceSA2
 )
+
+func (in InstanceType) Value() string  {
+	return string(in)
+}
 
 type Option func(qcloud2 *qcloud)
 
@@ -46,14 +58,20 @@ func WithSystemDiskSize(sdsize int) Option  {
 	}
 }
 
-func WithPaidType(paid string) Option  {
+func WithPaidType(paid PaidType) Option  {
 	return func(q *qcloud) {
 		q.paidType = paid
 	}
 }
 
-func WithInstanceType(intype string) Option  {
+func WithInstanceType(intype InstanceType) Option  {
 	return func(q *qcloud) {
 		q.instanceType = intype
+	}
+}
+
+func WithImageID() Option {
+	return func(q *qcloud) {
+		q.imageID = "img-h1yvvfw1"
 	}
 }
