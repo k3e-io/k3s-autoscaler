@@ -4,4 +4,7 @@ metadata:
   name: autoscaler-sample
 spec:
   # Add fields here
-  foo: bar
+  provider: qcloud
+  key: ""
+  secret: ""
+  vmmaxnum: 5

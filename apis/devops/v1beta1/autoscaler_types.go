@@ -27,17 +27,21 @@ import (
 type AutoScalerSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of AutoScaler. Edit autoscaler_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Provider  string `json:"provider"`
+	ApiKey    string `json:"key"`
+	ApiSecret string `json:"secret"`
+	VmMaxNum  int    `json:"vmmaxnum"`
 }
 
 // AutoScalerStatus defines the observed state of AutoScaler
 type AutoScalerStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	VmNum int `json:"vmnum"`
 }
 
+//+genclient
+//+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
@@ -50,6 +54,7 @@ type AutoScaler struct {
 	Status AutoScalerStatus `json:"status,omitempty"`
 }
 
+//+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 //+kubebuilder:object:root=true
 
 // AutoScalerList contains a list of AutoScaler

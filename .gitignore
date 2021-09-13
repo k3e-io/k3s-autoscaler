@@ -23,3 +23,5 @@ testbin/*
 *.swp
 *.swo
 *~
+
+config/samples/devops_v1beta1_autoscaler.yaml

@@ -1,6 +1,15 @@
+BUILD_VERSION   ?= $(shell cat version.txt || echo "unknown")
+BUILD_DATE      = $(shell date "+%Y%m%d")
+COMMIT_SHA1     ?= $(shell git rev-parse --short HEAD || echo "unknown")
+IMG_VERSION ?= ${BUILD_VERSION}-${BUILD_DATE}-${COMMIT_SHA1}
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+IMG ?= registry.cn-beijing.aliyuncs.com/k7scn/k3s-autoscaler:${IMG_VERSION}
+GHIMG ?= ghcr.io/ysicing/k3s-autoscaler:${IMG_VERSION}
+
+# kubecfg config
+kUBECFG ?= ~/.kube/config
+
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -49,18 +58,23 @@ fmt: ## Run go fmt against code.
 vet: ## Run go vet against code.
 	go vet ./...
 
+lint: ## Run go lint against code.
+	golangci-lint run --skip-files ".*test.go" -v ./...
+
+style: fmt vet lint ## code style
+
 ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
-test: manifests generate fmt vet ## Run tests.
+test: manifests generate style ## Run tests.
 	mkdir -p ${ENVTEST_ASSETS_DIR}
 	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
 ##@ Build
 
-build: generate fmt vet ## Build manager binary.
+build: generate style ## Build manager binary.
 	go build -o bin/manager main.go
 
-run: manifests generate fmt vet ## Run a controller from your host.
+run: manifests generate style ## Run a controller from your host.
 	go run ./main.go
 
 docker-build: test ## Build docker image with the manager.
@@ -69,21 +83,30 @@ docker-build: test ## Build docker image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
+docker: ## docker image with the manager.
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	docker build -t ${IMG} .
+	docker push ${IMG}
+	docker tag ${IMG} ${GHIMG}
+	docker push ${GHIMG}
+
+gen: style docker manifests kustomize ## Gen
+	$(KUSTOMIZE) build config/crd > hack/deploy/crd.yaml
+	$(KUSTOMIZE) build config/default > hack/deploy/k3s-autoscaler.yaml
+
 ##@ Deployment
 
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl apply -f -
+	kubectl apply --kubeconfig ${kUBECFG} -f hack/deploy/crd.yaml
 
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl delete -f -
+	kubectl delete --kubeconfig ${kUBECFG} -f hack/deploy/crd.yaml
 
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
+	kubectl apply --kubeconfig ${kUBECFG} -f hack/deploy/k3s-autoscaler.yaml
 
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/default | kubectl delete -f -
-
+	kubectl delete --kubeconfig ${kUBECFG} -f hack/deploy/k3s-autoscaler.yaml
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: ## Download controller-gen locally if necessary.
