@@ -310,7 +310,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: registry.cn-beijing.aliyuncs.com/k7scn/k3s-autoscaler:0.0.1-20210914-bfe3de5
+        image: registry.cn-beijing.aliyuncs.com/k7scn/k3s-autoscaler:0.0.1-20210914-8947e28
         livenessProbe:
           httpGet:
             path: /healthz
