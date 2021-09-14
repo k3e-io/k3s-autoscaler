@@ -90,7 +90,7 @@ docker: ## docker image with the manager.
 	docker tag ${IMG} ${GHIMG}
 	docker push ${GHIMG}
 
-gen: style docker manifests kustomize ## Gen
+gen: style manifests kustomize docker ## Gen
 	$(KUSTOMIZE) build config/crd > hack/deploy/crd.yaml
 	$(KUSTOMIZE) build config/default > hack/deploy/k3s-autoscaler.yaml
 

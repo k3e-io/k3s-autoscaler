@@ -14,6 +14,7 @@ type eventHandler struct {
 }
 
 func (e *eventHandler) Create(evt event.CreateEvent, q workqueue.RateLimitingInterface) {
+
 }
 
 func (e *eventHandler) Update(evt event.UpdateEvent, q workqueue.RateLimitingInterface) {

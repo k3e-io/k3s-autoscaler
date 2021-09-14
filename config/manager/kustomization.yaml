@@ -13,4 +13,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: registry.cn-beijing.aliyuncs.com/k7scn/k3s-autoscaler
-  newTag: 0.0.1-20210913-3789491
+  newTag: 0.0.1-20210914-bfe3de5

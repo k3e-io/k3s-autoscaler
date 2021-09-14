@@ -8,3 +8,8 @@
 kubectl apply -f https://raw.githubusercontent.com/ysicing/k3s-autoscaler/master/hack/deploy/crd.yaml
 kubectl apply -f https://raw.githubusercontent.com/ysicing/k3s-autoscaler/master/hack/deploy/k3s-autoscaler.yaml
 ```
+
+## Roadmap
+
+- v0
+  - 实现扩容

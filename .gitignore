@@ -25,3 +25,4 @@ testbin/*
 *~
 
 config/samples/devops_v1beta1_autoscaler.yaml
+tmp
