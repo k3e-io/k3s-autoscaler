@@ -14,7 +14,7 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.250
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.250
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/vpc v1.0.250
-	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	k8s.io/api v0.20.2
 	k8s.io/apimachinery v0.20.2
